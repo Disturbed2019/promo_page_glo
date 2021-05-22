@@ -18,44 +18,48 @@ const sendData = (data, callback, falseCallback) => {
 const formElems = document.querySelectorAll('.form');
 
 const formHandler = (form) => {
+    const smallElem = document.createElement('small');
+    form.append(smallElem);
     form.addEventListener('submit',(event)=>{
         event.preventDefault();
         const data = {};
-        for (const {name, value} of form.elements){
-            if (name){
-               data[name] = value
+        let flag = true;
+        const buttonSubmit = form.querySelector('.button[type="submit"]');
+        for (const elem of form.elements){
+            const {name, value} = elem;
+            if (name ){
+                if (value.trim()){
+                    elem.style.border= '';
+                    data[name] = value;
+                } else {
+                    elem.style.border= '1px solid red';
+                    flag = false;
+                    elem.value='';
+                }
             }
         }
-        const smallElem = document.createElement('small');
+        if (!flag){
+            return smallElem.textContent = 'Заполните поля!'
+        }
+
         sendData(JSON.stringify(data),
         (id)=>{
             smallElem.textContent = 'Ваша заявка №'+ id +
                 '!\nМы скоро с вами свяжемся!';
-            smallElem.style.color = 'green'
-            form.append(smallElem)
+            smallElem.style.color = 'green';
+            buttonSubmit.disabled = true;
 
+            setTimeout(() => {
+                smallElem.textContent = '';
+                buttonSubmit.disabled = false;
+            },5000)
         },
         (err) =>{
             smallElem.textContent = 'На сайте технические работы';
             smallElem.style.color = 'red';
-            form.append(smallElem)
         });
         form.reset();
     })
 };
 
 formElems.forEach(formHandler);
-
-// const dataTest ={
-//     name: 'dallas',
-//     phone: '+123456789'
-// };
-//
-// sendData(JSON.stringify(dataTest),
-//     (id)=>{
-//         alert('Ваша заявка №'+ id+'!\nМы скоро с вами свяжемся!');
-//         console.log(id)
-//     },
-//     (err) =>{
-//         alert('Ошибка'+ err)
-//     });
