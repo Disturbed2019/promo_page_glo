@@ -12,11 +12,12 @@ const featureSubElems = document.querySelectorAll('.feature-sub');
                     featureSubElem.classList.add('hidden');
                 });
                 featureLinkElems.forEach((featureLinkElem) => {
-                    btn.classList.remove('feature__link_active');
+                    featureLinkElem.classList.remove('feature__link_active');
                 });
                 featureSubElems[index].classList.remove('hidden');
                 btn.classList.add('feature__link_active');
             }
+
         })
     })
 });
